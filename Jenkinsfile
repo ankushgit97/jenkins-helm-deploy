@@ -24,22 +24,21 @@ pipeline {
                 script {
                     def customImage = docker.build("ankush2106/petclinic:${env.BUILD_NUMBER}", "./docker")
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                    customImage.push()    
+                      customImage.push()    
+                  }
                 }
             }
-              
-    } 
-    stage('Build on kubernetes'){
-        steps {
-            withKubeConfig([credentialsId: 'kubeconfig']) {
-                sh 'pwd'
-                sh 'cp -R helm/* .'
-                sh 'ls -ltrh'
-                sh 'pwd'
-                sh '/usr/local/bin/helm upgrade --install petclinic-app petclinic --set image.repository=ashaik65/petclinic --set image.tag=${BUILD_NUMBER}'
+        }   
+        stage('Build on kubernetes'){
+            steps {
+                withKubeConfig([credentialsId: 'kubeconfig']) {
+                    sh 'pwd'
+                    sh 'cp -R helm/* .'
+                    sh 'ls -ltrh'
+                    sh 'pwd'
+                    sh '/usr/local/bin/helm upgrade --install petclinic-app petclinic --set image.repository=ankushgit97/petclinic --set image.tag=${BUILD_NUMBER}'
         }
     }       
-}
 }
 }
 }
